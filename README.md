@@ -3,7 +3,7 @@
 
 This is a set of scripts to match reviewers to papers for the DH2024 conference. 
 
-1. The first script `make_reviewers_csv.py` takes the reviewer data from ConfTool and adds information from Google search in addition to the declared keywords. The search query contains the reviewer's first and last name plus "digital humanities". The top results page and snippet text is saved, which provides greater context for matching. The script outputs a csv file called `reviewers.csv`.
+1. The first script `make_reviewers_csv.py` takes the reviewer data from ConfTool and adds information from Google and Google Scholar search in addition to the declared keywords. Search data was gathered with the Serp API so as to follow Google's terms of usage. The search query contains the reviewer's first and last name plus "digital humanities". The top results page and snippet text is saved, which provides greater context for matching. The script outputs a csv file called `reviewers.csv`.
 
 2. The second script `reviewers_to_db.py` loads the data from reviewers.csv and adds it to a Chroma vector database.  The language agnostic BERT sentence transformer (LaBSE) is used to create the embeddings. All text is chunked into blocks that can be processed by LaBSE.
 
