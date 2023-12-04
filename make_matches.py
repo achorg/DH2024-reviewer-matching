@@ -72,8 +72,10 @@ for id in random_paperIDs:
             if len(reviewer['assignments']) < reviewer['maxreviews'] and reviews_assigned < 3:
                 reviewer['assignments'].append({'paperID':row['paperID'],'title':row['title'],'distance':row['distance']})
                 reviews_assigned += 1
-                break
 
-#TODO end of day, need to add max_reviewers to papers  
-#     
-df.to_csv('match_results.csv')
+output = []
+for reviewer in reviewers:
+    for assignment in reviewer['assignments']:
+        output.append({'personID':reviewer['personID'],'name':reviewer['name'],'paperID':assignment['paperID'],'title':assignment['title'],'distance':assignment['distance']})
+out_df = pd.DataFrame(output)
+out_df.to_csv('match_results.csv')
