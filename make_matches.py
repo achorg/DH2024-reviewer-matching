@@ -17,7 +17,7 @@ paper_fields = ['paperID','title', 'title_plain','keywords', 'topics', 'tg1_Lang
 papers = papers[paper_fields]
 
 # load reviewers, create list of dictionaries
-reviewers = pd.read_csv('reviewers.csv',index_col=0)
+reviewers = pd.read_csv('reviewers.csv')
 reviewers = reviewers.to_dict('records') # --> List[dict]
 # add assignment key with list for each reviewer
 for reviewer in reviewers:
@@ -27,6 +27,7 @@ for reviewer in reviewers:
 def concatenate_text(row):
     """
     Concatenates the non-null values from the specified fields in the given row.
+
     """
     output = ""
     for field in paper_fields:
