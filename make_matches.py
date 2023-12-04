@@ -25,6 +25,9 @@ for reviewer in reviewers:
 
 #concatenate all values in each row 
 def concatenate_text(row):
+    """
+    Concatenates the non-null values from the specified fields in the given row.
+    """
     output = ""
     for field in paper_fields:
         if row[field] != 'nan':
