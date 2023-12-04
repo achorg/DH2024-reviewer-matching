@@ -60,14 +60,18 @@ random_paperIDs = matches_df.paperID.unique()
 random.shuffle(random_paperIDs)
 
 for id in random_paperIDs:
+    reviews_assigned = 0
+    
     paper_matches = matches_df[matches_df['paperID'] == id]
     # sort by distance in descending order
     paper_matches = paper_matches.sort_values(by=['distance'],ascending=False)
     for i, row in paper_matches.iterrows():
         reviewer = next((item for item in reviewers if item["personID"] == row['personID']), None)
         if reviewer:
-            if len(reviewer['assignments']) < reviewer['maxreviews']:
+            # if reviewer has less than max reviews and paper has less than 3 reviews
+            if len(reviewer['assignments']) < reviewer['maxreviews'] and reviews_assigned < 3:
                 reviewer['assignments'].append({'paperID':row['paperID'],'title':row['title'],'distance':row['distance']})
+                reviews_assigned += 1
                 break
 
 #TODO end of day, need to add max_reviewers to papers  
