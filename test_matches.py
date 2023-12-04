@@ -10,5 +10,7 @@ assert matches.groupby('paperID').count().max()[0] == 3
 
 # Assert that no reviewer is assigned to the same paper more than once 
 
+# No author is assigned to review their own paper
+
 
 

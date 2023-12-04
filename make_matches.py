@@ -80,6 +80,6 @@ for id in random_paperIDs:
 output = []
 for reviewer in reviewers:
     for assignment in reviewer['assignments']:
-        output.append({'personID':reviewer['personID'],'name':reviewer['name'],'paperID':assignment['paperID'],'title':assignment['title'],'distance':assignment['distance']})
+        output.append({'personID':reviewer['personID'],'firstname':reviewer['firstname'],'name':reviewer['name'],'paperID':assignment['paperID'],'title':assignment['title'],'distance':assignment['distance']})
 out_df = pd.DataFrame(output)
 out_df.to_csv('match_results.csv')
