@@ -64,7 +64,7 @@ def clean_response(row):
         return response
     
 reviewer_df['info'] = reviewer_df.apply(clean_response, axis=1)
-reviewer_df.to_csv('reviewers2.csv')
+reviewer_df.to_csv('reviewers.csv')
 
 
 

@@ -31,7 +31,7 @@ for i, row in reviewer_df.iterrows():
     for o, chunk in enumerate(text_chunks):
         documents.append(chunk)
         metadatas.append({"id":row["personID"],"type": "person","first_name":row["firstname"],"last_name":row["name"]})
-        ids.append('p'+str(i)+'_'+str(o))
+        ids.append(str(row["personID"]))
         pbar.update(1)
 
 collection.add(

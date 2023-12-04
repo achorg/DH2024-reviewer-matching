@@ -10,12 +10,17 @@ collection = client.get_collection(name="DH2024",embedding_function=sentence_tra
 
 splitter = SentenceTransformersTokenTextSplitter(chunk_overlap=5,model_name="LaBSE")
 
-papers = pd.read_csv('/mnt/c/Users/apjan/Downloads/DH2024WashingtonDC_papers_2023-11-24_13-14-41.csv')
+papers = pd.read_csv('DH2024WashingtonDC_papers_2023-12-02_08-01-37.csv')
 paper_fields = ['paperID','title', 'title_plain','keywords', 'topics', 'tg1_Language', 'tg3_Geography', 'tg2_Temporal',
 'tg4_Methods', 'tg5_Disciplines_Fields_of_Study','tg7_TechReview', 'abstract_plain']
-papers_df = papers[paper_fields]
+papers = papers[paper_fields]
 
-# load reviewers, create dict
+# load reviewers, create list of dictionaries
+reviewers = pd.read_csv('reviewers.csv',index_col=0)
+reviewers = reviewers.to_dict('records') # --> List[dict]
+# add assignment key with list for each reviewer
+for reviewer in reviewers:
+    reviewer['assignments'] = []
 
 #concatenate all values in each row 
 def concatenate_text(row):
@@ -28,22 +33,29 @@ def concatenate_text(row):
 documents = []
 metadatas = []
 ids = []
-pbar = tqdm(total=len(papers_df))
+pbar = tqdm(total=len(papers))
 
-for i, row in papers_df.iterrows():
+for i, row in papers.iterrows():
     text = concatenate_text(row)
     text_chunks = splitter.split_text(text=text)
     for o, chunk in enumerate(text_chunks):
         documents.append(chunk)
         metadatas.append({"id":row["paperID"],"type": "paper", "title":row["title"]})
-        ids.append(str(i)+'_'+str(o))
+        ids.append(str(row["paperID"]))
         pbar.update(1)
 
 matches = collection.query(
     query_texts=documents,
-    n_results=5,
+    n_results=10,
     where={"type": "person"},
 )
+#dict_keys(['ids', 'distances', 'metadatas', 'embeddings', 'documents', 'uris', 'data'])
+
+# randomize order of papers
+# group matches by paper id
+# for each paper, get top match
+# if reviewer has not reached max reviews, add to list
+# record match for reviewer and paper
 
 data = []
 for i, paper in enumerate(metadatas):
