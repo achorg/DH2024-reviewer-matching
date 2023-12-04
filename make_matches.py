@@ -3,6 +3,7 @@ import pandas as pd
 from tqdm import tqdm
 from langchain.text_splitter import SentenceTransformersTokenTextSplitter
 from chromadb.utils import embedding_functions
+import random 
 
 client = chromadb.PersistentClient(path="db")
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="LaBSE")
@@ -33,7 +34,6 @@ def concatenate_text(row):
 documents = []
 metadatas = []
 ids = []
-pbar = tqdm(total=len(papers))
 
 for i, row in papers.iterrows():
     text = concatenate_text(row)
@@ -42,7 +42,6 @@ for i, row in papers.iterrows():
         documents.append(chunk)
         metadatas.append({"id":row["paperID"],"type": "paper", "title":row["title"]})
         ids.append(str(row["paperID"]))
-        pbar.update(1)
 
 matches = collection.query(
     query_texts=documents,
@@ -50,32 +49,27 @@ matches = collection.query(
     where={"type": "person"},
 )
 #dict_keys(['ids', 'distances', 'metadatas', 'embeddings', 'documents', 'uris', 'data'])
-
-# randomize order of papers
-# group matches by paper id
-# for each paper, get top match
-# if reviewer has not reached max reviews, add to list
-# record match for reviewer and paper
-
 data = []
-for i, paper in enumerate(metadatas):
-    for l in range(len(matches['distances'][i])):
-        row = {}
-        row['paperID'] = paper["id"]
-        row['title'] = paper['title']
-        row['distance'] = matches['distances'][i][l]
-        row["first_name"] = matches['metadatas'][i][l]["first_name"]
-        row["last_name"] = matches['metadatas'][i][l]["last_name"]
-        row["personID"] = matches['metadatas'][i][l]["id"]
-        row["document"] = matches['documents'][i][l]
-        data.append(row)
-df = pd.DataFrame(data)
+for i, (distance, meta) in enumerate(zip(matches['distances'], matches['metadatas'])):
+    for d, m in zip(distance, meta):
+        data.append({"paperID": metadatas[i]['id'],"title":metadatas[i]['title'], "personID": m['id'], "distance": d, 'first_name': m['first_name'], 'last_name': m['last_name']})
+
+matches_df = pd.DataFrame(data)
+
+random_paperIDs = matches_df.paperID.unique()
+random.shuffle(random_paperIDs)
+
+for id in random_paperIDs:
+    paper_matches = matches_df[matches_df['paperID'] == id]
+    # sort by distance in descending order
+    paper_matches = paper_matches.sort_values(by=['distance'],ascending=False)
+    for i, row in paper_matches.iterrows():
+        reviewer = next((item for item in reviewers if item["personID"] == row['personID']), None)
+        if reviewer:
+            if len(reviewer['assignments']) < reviewer['maxreviews']:
+                reviewer['assignments'].append({'paperID':row['paperID'],'title':row['title'],'distance':row['distance']})
+                break
+
+#TODO end of day, need to add max_reviewers to papers  
+#     
 df.to_csv('match_results.csv')
-#returns a dict with lists of lists len n_results for ids, distances, metadatas, id, documents 
-#get embeddings for each paper
-
-#use those embeddings to search for nearest reviewers
-
-# for each paper, match N reviewers
-
-# record results to csv with match score

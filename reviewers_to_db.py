@@ -3,6 +3,7 @@ import pandas as pd
 from tqdm import tqdm
 from langchain.text_splitter import SentenceTransformersTokenTextSplitter
 from chromadb.utils import embedding_functions
+import uuid 
 
 client = chromadb.PersistentClient(path="db")
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="LaBSE")
@@ -31,7 +32,7 @@ for i, row in reviewer_df.iterrows():
     for o, chunk in enumerate(text_chunks):
         documents.append(chunk)
         metadatas.append({"id":row["personID"],"type": "person","first_name":row["firstname"],"last_name":row["name"]})
-        ids.append(str(row["personID"]))
+        ids.append(uuid.uuid4().hex)
         pbar.update(1)
 
 collection.add(
