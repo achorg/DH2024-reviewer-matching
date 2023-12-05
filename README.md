@@ -1,8 +1,6 @@
 # DH2024-reviewer-matching
 
-The [ADHO Conference Protocol](https://adho.org/conference/conference-protocol/) states that "PC chairs are responsible for determining the best algorithm for determining assignments of reviewers to submissions (e.g., via keyword)." 
-
-Recent scholarship on the DH conference has noted the problems and limitations of keywords, topics and terms as a method of matching papers and reviewers. Keywords and topics are not reviewed or managed between conferences, they are exported from one ConfTool instance to another. Topics are only available in English. 
+Recent scholarship on the DH conference has noted problems with the ConfTools matching algorithm and its use of keywords as a method for matching papers and reviewers. This system is highly dependent on the data provided by reviewers when they register and authors when they submit their proposals. Entering many terms makes it possible to find a "strong" match with someone who has entered the same terms. However, this data is often lacking and open to interpretation and ambiguity. Keywords and topics are not reviewed or managed between conferences, they are exported from one ConfTool instance to another. Topics are only available in English. 
 
 > "...the [ConfTool] algorithm does not accommodate submissions and reviewer expertise outside of the English language. ...While individually these issues can be resolved through creative solutions and human engineering, the underlying issue of the algorithm illustrates an English bias that undermines diversity efforts."[The circus we deserve? A front row look at the organization of the annual academic conference for the Digital Humanities](http://digitalhumanities.org:8081/dhq/vol/16/4/000643/000643.html) 
 
