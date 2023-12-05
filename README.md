@@ -21,7 +21,7 @@ This project is an attempt to improve upon the current system by using multiling
 
 ### Rationale of the algorithm:
 
-- Approximates the processing of Googling a scholar and reviewing their publications as a human might do.
+- [add more information that what we get with keywords. Many reviewers have none.]Approximates the processing of Googling a scholar and reviewing their publications as a human might do.
 - Is meant to be a starting point and reference for the program committee, not an automated process. 
 - The reviewer's declared keywords are used to create a vector for the reviewer. This is important for continuity with the previous reviewer matching system.
 - Unlike ConfTool, a reviewer's instituional affliliation is not used to avoid conflict of interest. 
@@ -34,3 +34,7 @@ Alternatives to "Google fingerprint?"
 Test against real people, does it seem like a good match? 
 Need to account for Language!! 
 Add a requirements file  
+
+Add paper contribution_type
+Mark as needing tech review 
+
