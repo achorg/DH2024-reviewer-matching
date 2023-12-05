@@ -8,14 +8,24 @@ The ConfTool algorithm cannot account for the similarity of topics.
 
 > "One author may select 'computer-assisted technology,' another 'machine learning,' still another 'artificial intelligence,' and a final one' natural language processing .' While we, as experts, know that these are all methodologically aligned, the [ConfTool] algorithm is unable to reconcile these terms together when it comes to assignment." [What gets categorized counts: Controlled vocabularies, digital affordances, and the international digital humanities conference](https://academic.oup.com/dsh/article/38/3/1088/6988912)
 
-This project aims to improve on controlled-vocabulary-based matching by adding multilingual text embeddings to recommend matches between reviewers and papers. Sentence embeddings offer a more nuanced and contextual representation of the meaning of text than keywords. Keyword matching requires an exact match between the terms used by the reviewer and the terms used by the paper author. Embeddings allow for a more flexible match. Each match has a distance that can indicate similarity between the reviewer's described expertise and the paper description. 
+This project aims to improve on controlled-vocabulary-based matching by adding multilingual text embeddings to recommend matches between reviewers and papers. Embeddings are learned numerical representations of the meaning of text that are encoded by a large language model. 
+
+![](https://1.bp.blogspot.com/-6upFrBNGwo4/Xzwk7D60GaI/AAAAAAAAGZs/ZDgmdCvBYfQr2cc5CkWW0AfIzD11x1q4wCLcBGAsYHQ/s0/image2%2B%25284%2529.jpg) 
+
+Visualization of multilingual text embeddings from [Google AI Blog](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html)
+
+### Goals of the algorithm:
+- Address the English bias of the ConfTool algorithm by using multilingual text embeddings.
+- Use the semantic similarity of topics to make matches between reviewers and papers in addition to exact keyword matches.
+
+Sentence embeddings offer a more nuanced and contextual representation of the meaning of text than keywords. Keyword matching requires an exact match between the terms used by the reviewer and the terms used by the paper author. Embeddings allow for a more flexible match by using a distance score. Each match has a distance that can indicate similarity between the reviewer's described expertise and the paper description. 
 
 Furthermore, sentence embeddings allow us to use a paper's title, abstract, and keywords to make a match. This is important because many papers do not have keywords. Many reviewers also do not have keywords, so we only have their names and institutions. This information can be used to search for information about the reviewer using Google and Google Scholar.  
 
 The algorithm is implemented in Python and uses the [Language-agnostic BERT Sentence Embedding (LaBSE)](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) model to create the embeddings. The LaBSE model was trained on 109 languages. 
 
 ### The algorithm is implemented in four scripts.
-1. The first script `make_reviewers_csv.py` takes the reviewer data from ConfTool and adds information from Google and Google Scholar search in addition to the declared keywords. Search data was gathered with the Serp API so as to follow Google's terms of usage. The search query contains the reviewer's first and last name plus "digital humanities." The top results title and snippet text is saved, which provides greater context for matching. The script outputs a csv file called `reviewers.csv`.
+1. The first script `make_reviewers_csv.py` takes the reviewer data from ConfTool and adds information from Google and Google Scholar search. The Google search tends to include biographical and professional information. Google Scholar results include the titles of publications. Search data is gathered with the Serp API so as to follow Google's terms of usage. The search query contains the reviewer's first and last name plus "digital humanities." The top results title and snippet text is saved, which provides greater context for matching. The script outputs a csv file called `reviewers.csv`.
 
 2. The second script `reviewers_to_db.py` loads the data from reviewers.csv and adds it to a [Chroma](https://docs.trychroma.com/) vector database. The Language-agnostic BERT Sentence Embedding (LaBSE) model is used to create the embeddings. All text is chunked into blocks that can be processed by LaBSE.
 
@@ -25,6 +35,6 @@ The algorithm is implemented in Python and uses the [Language-agnostic BERT Sent
 
 ### Rationale of the algorithm:
 
-- Is meant to be a starting point and reference for the program committee, not an automated process. 
-- By Googling a scholar and including their publications, we get a better representation of their expertise than keywords alone. Nonetheless, the reviewer's declared keywords are still essential to the matching process, given that they can provide a 1:1 match with a paper's keywords. 
+- This algorithm is meant to be a starting point and reference for the program committee, not an automated process. 
+- By Googling a scholar and including their publications, we get a better representation of their expertise than keywords alone. Nonetheless, the reviewer's declared keywords are still key to the matching process, given that they can provide a 1:1 match with a paper's keywords. 
 - The algorithm does not try to find potential conflicts of interest. "Conflicts of interest include collaborators, projects on which you have worked, colleagues at your institution, or a situation in which your evaluation (positive or negative) would be professionally advantageous to you" ([src](https://ach2023.ach.org/en/reviewer-guidelines/)). Conflict of interest identification can be done using ConfTool with a reviewer's name, email address, and institutional affiliation [(see)](https://www.conftool.net/ctforum/index.php/topic,117.0.html). As Jennifer Guiliano and Laura Estil note, "Given how common large, multi-institutional projects are, as well as collaborative work more generally in the digital humanities, the current automated conflict of interest process [in ConfTool] is insufficient." When a review is assigned, it is important to give the potential reviewer [the option to decline, given a potential conflict](https://www.conftool.net/ctforum/index.php/topic,229.0.html). 
