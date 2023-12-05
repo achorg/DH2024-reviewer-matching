@@ -12,7 +12,7 @@ collection = client.get_collection(name="DH2024",embedding_function=sentence_tra
 splitter = SentenceTransformersTokenTextSplitter(chunk_overlap=5,model_name="LaBSE")
 
 papers = pd.read_csv('DH2024WashingtonDC_papers_2023-12-02_08-01-37.csv')
-paper_fields = ['paperID','title','contribution_type','title_plain','keywords', 'topics', 'tg1_Language', 'tg3_Geography', 'tg2_Temporal',
+paper_fields = ['paperID','authors','title','contribution_type','title_plain','keywords', 'topics', 'tg1_Language', 'tg3_Geography', 'tg2_Temporal',
 'tg4_Methods', 'tg5_Disciplines_Fields_of_Study','tg7_TechReview', 'abstract_plain']
 papers = papers[paper_fields]
 
@@ -74,8 +74,14 @@ for id in random_paperIDs:
         if reviewer:
             # if reviewer has less than max reviews and paper has less than 3 reviews
             if len(reviewer['assignments']) < reviewer['maxreviews'] and reviews_assigned < 3:
-                reviewer['assignments'].append({'paperID':row['paperID'],'contribution_type': row['contribution_type'],'title':row['title'],'distance':row['distance']})
-                reviews_assigned += 1
+                # assert reviewer is not already assigned to this paper
+                if not any(d['paperID'] == row['paperID'] for d in reviewer['assignments']):
+                    # assert reviewer is not an author of this paper
+                    reviewer_name = row['last_name'] + ", " + row['first_name']
+                    authors = papers[papers['paperID'] == row['paperID']]['authors'].values[0]
+                    if reviewer_name not in authors:
+                        reviewer['assignments'].append({'paperID':row['paperID'],'contribution_type': row['contribution_type'],'title':row['title'],'distance':row['distance']})
+                        reviews_assigned += 1
 
 output = []
 for reviewer in reviewers:
