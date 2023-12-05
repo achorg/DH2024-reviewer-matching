@@ -1,10 +1,10 @@
 # DH2024-reviewer-matching
 
-Recent scholarship on the DH conference has noted problems with the ConfTool's matching algorithm and its use of keywords for matching papers and reviewers. This system highly depends on the data reviewers provide when they register and authors when submitting their proposals. Entering many terms makes it possible to find a "strong" match with someone who has entered the same terms. However, this data is often lacking and open to interpretation and ambiguity. Keywords and topics are not reviewed or managed between conferences; they are exported from one ConfTool instance to another. Keywords are only available in English. 
+Recent scholarship on the DH conference has noted problems with ConfTool's matching algorithm and its use of keywords for matching papers and reviewers. This system highly depends on the data reviewers provide when they register and authors when submitting their proposals. Entering many terms makes it possible to find a "strong" match with someone who has entered the same terms. However, this data is often lacking and open to interpretation and ambiguity. Keywords and topics are not reviewed or managed between conferences; they are exported from one ConfTool instance to another. Keywords are only available in English. As noted by several past conference organizers: 
 
 > "...the [ConfTool] algorithm does not accommodate submissions and reviewer expertise outside of the English language. ...While individually these issues can be resolved through creative solutions and human engineering, the underlying issue of the algorithm illustrates an English bias that undermines diversity efforts." [The circus we deserve? A front row look at the organization of the annual academic conference for the Digital Humanities](http://digitalhumanities.org:8081/dhq/vol/16/4/000643/000643.html) 
 
-Finally, the ConfTool algorithm cannot account for the similarity of topics. 
+The ConfTool algorithm cannot account for the similarity of topics. 
 
 > "One author may select 'computer-assisted technology,' another 'machine learning,' still another 'artificial intelligence,' and a final one' natural language processing .' While we, as experts, know that these are all methodologically aligned, the [ConfTool] algorithm is unable to reconcile these terms together when it comes to assignment." [What gets categorized counts: Controlled vocabularies, digital affordances, and the international digital humanities conference](https://academic.oup.com/dsh/article/38/3/1088/6988912)
 
