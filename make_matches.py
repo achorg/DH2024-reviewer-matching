@@ -67,8 +67,8 @@ for id in random_paperIDs:
     reviews_assigned = 0
     
     paper_matches = matches_df[matches_df['paperID'] == id]
-    # sort by distance in descending order
-    paper_matches = paper_matches.sort_values(by=['distance'],ascending=False)
+    # sort by distance in ascending order, closest matches first.
+    paper_matches = paper_matches.sort_values(by=['distance'])
     for i, row in paper_matches.iterrows():
         reviewer = next((item for item in reviewers if item["personID"] == row['personID']), None)
         if reviewer:
