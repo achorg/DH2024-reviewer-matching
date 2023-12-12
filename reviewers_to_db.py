@@ -5,12 +5,12 @@ from langchain.text_splitter import SentenceTransformersTokenTextSplitter
 from chromadb.utils import embedding_functions
 import uuid
 
-client = chromadb.PersistentClient(path="db")
+client = chromadb.PersistentClient(path="reviewers")
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="LaBSE"
 )
 collection = client.get_or_create_collection(
-    name="DH2024", embedding_function=sentence_transformer_ef
+    name="reviewers", embedding_function=sentence_transformer_ef
 )
 
 splitter = SentenceTransformersTokenTextSplitter(chunk_overlap=5, model_name="LaBSE")

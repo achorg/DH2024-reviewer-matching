@@ -37,4 +37,11 @@ The algorithm is implemented in Python and uses the [Language-agnostic BERT Sent
 
 - This algorithm is meant to be a starting point and reference for the program committee, not an automated process. 
 - By Googling a scholar and including their publications, we get a better representation of their expertise than keywords alone. Nonetheless, the reviewer's declared keywords are still key to the matching process, given that they can provide a 1:1 match with a paper's keywords. 
+- The algorithm does not distinguish between presentation types. It is just as likely to assign a poster to a senior scholar as it is to assign a long paper to a graduate student. This choice invites further discussion and relflection. 
 - The algorithm does not try to find potential conflicts of interest. "Conflicts of interest include collaborators, projects on which you have worked, colleagues at your institution, or a situation in which your evaluation (positive or negative) would be professionally advantageous to you" ([src](https://ach2023.ach.org/en/reviewer-guidelines/)). Conflict of interest identification can be done using ConfTool with a reviewer's name, email address, and institutional affiliation [(see)](https://www.conftool.net/ctforum/index.php/topic,117.0.html). As Jennifer Guiliano and Laura Estil note, "Given how common large, multi-institutional projects are, as well as collaborative work more generally in the digital humanities, the current automated conflict of interest process [in ConfTool] is insufficient." When a review is assigned, it is important to give the potential reviewer [the option to decline, given a potential conflict](https://www.conftool.net/ctforum/index.php/topic,229.0.html). 
+
+
+### Data for report to CCC:
+Total number of reviews 
+compare matches made with ConfTool algorithm and semantic matching.
+note areas where manual intervention was needed.

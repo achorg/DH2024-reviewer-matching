@@ -5,7 +5,7 @@ import os
 
 client = serpapi.Client(api_key=os.getenv("SERP_API_KEY"))
 
-reviewers = pd.read_csv("DH2024WashingtonDC_reviewers_2023-11-29_15-19-51.csv")
+reviewers = pd.read_csv("DH2024WashingtonDC_reviewers_2023-12-11_04-35-28.csv")
 reviewer_fields = ["personID", "name", "firstname", "topics", "maxreviews"]
 reviewer_df = reviewers[reviewer_fields]
 
