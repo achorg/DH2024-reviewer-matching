@@ -44,7 +44,7 @@ for i, row in papers.iterrows():
     text_chunks = splitter.split_text(text=text)
     for o, chunk in enumerate(text_chunks):
         documents.append(chunk)
-        metadatas.append({"id":row["paperID"],"type": "paper", "title":row["title"],"abstract":row['abstract_plain'], 'contribution_type': row['contribution_type']})
+        metadatas.append({"id":row["paperID"],"type": "paper", "title":row["title"],"abstract":row['abstract_plain'], 'paper_topics':row['topics'], 'contribution_type': row['contribution_type']})
         ids.append(str(row["paperID"]))
 
 matches = collection.query(
@@ -56,7 +56,7 @@ matches = collection.query(
 data = []
 for i, (distance, meta) in enumerate(zip(matches['distances'], matches['metadatas'])):
     for d, m in zip(distance, meta):
-        data.append({"paperID": metadatas[i]['id'],"title":metadatas[i]['title'], 'abstract':metadatas[i]['abstract'],'contribution_type': metadatas[i]['contribution_type'], "personID": m['id'], "distance": d, 'first_name': m['first_name'], 'last_name': m['last_name']})
+        data.append({"paperID": metadatas[i]['id'],"title":metadatas[i]['title'], 'paper_topics': metadatas[i]['paper_topics'],'abstract':metadatas[i]['abstract'],'contribution_type': metadatas[i]['contribution_type'], "personID": m['id'], "distance": d, 'first_name': m['first_name'], 'last_name': m['last_name']})
 
 matches_df = pd.DataFrame(data)
 
@@ -80,12 +80,14 @@ for id in random_paperIDs:
                     reviewer_name = row['last_name'] + ", " + row['first_name']
                     authors = papers[papers['paperID'] == row['paperID']]['authors'].values[0]
                     if reviewer_name not in authors:
-                        reviewer['assignments'].append({'paperID':row['paperID'],'contribution_type': row['contribution_type'],'title':row['title'],'abstract':row['abstract'],'distance':row['distance']})
+                        reviewer['assignments'].append({'paperID':row['paperID'],'contribution_type': row['contribution_type'],'title':row['title'],'paper_topics':row['paper_topics'],'abstract':row['abstract'],'distance':row['distance']})
                         reviews_assigned += 1
 
 output = []
 for reviewer in reviewers:
     for assignment in reviewer['assignments']:
-        output.append({'personID':reviewer['personID'],'firstname':reviewer['firstname'],'name':reviewer['name'],'google':reviewer['google'],'scholar':reviewer['scholar'],'paperID':assignment['paperID'],'title':assignment['title'],'abstract':assignment['abstract'],'distance':assignment['distance'], 'contribution_type': assignment['contribution_type']})
+        output.append({'personID':reviewer['personID'],'firstname':reviewer['firstname'],'name':reviewer['name'],'reviewer_topics':str(reviewer['topics']).replace(',','').replace('\n',';'),'google':reviewer['google'],'scholar':reviewer['scholar'],'paperID':assignment['paperID'],'title':assignment['title'],'abstract':assignment['abstract'],'paper_topics':str(assignment['paper_topics']).replace('\n',';'),'distance':assignment['distance'], 'contribution_type': assignment['contribution_type']})
 out_df = pd.DataFrame(output)
+out_df['keyword_matches'] = out_df.apply(lambda row: row['paper_topics'] in row['reviewer_topics'], axis=1)
+out_df['number_of_matches'] = out_df.apply(lambda row: len(set(row['paper_topics'].split(';')) & set(row['reviewer_topics'].split(';'))), axis=1)
 out_df.to_csv('match_results.csv')
