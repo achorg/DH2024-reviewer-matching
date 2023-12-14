@@ -88,6 +88,6 @@ for reviewer in reviewers:
     for assignment in reviewer['assignments']:
         output.append({'personID':reviewer['personID'],'firstname':reviewer['firstname'],'name':reviewer['name'],'reviewer_topics':str(reviewer['topics']).replace(',','').replace('\n',';'),'google':reviewer['google'],'scholar':reviewer['scholar'],'paperID':assignment['paperID'],'title':assignment['title'],'abstract':assignment['abstract'],'paper_topics':str(assignment['paper_topics']).replace('\n',';'),'distance':assignment['distance'], 'contribution_type': assignment['contribution_type']})
 out_df = pd.DataFrame(output)
-out_df['keyword_matches'] = out_df.apply(lambda row: row['paper_topics'] in row['reviewer_topics'], axis=1)
+out_df['keyword_matches'] = out_df.apply(lambda row: ";".join(list(set(row['paper_topics'].split(';')) & set(row['reviewer_topics'].split(';')))), axis=1)
 out_df['number_of_matches'] = out_df.apply(lambda row: len(set(row['paper_topics'].split(';')) & set(row['reviewer_topics'].split(';'))), axis=1)
 out_df.to_csv('match_results.csv')
