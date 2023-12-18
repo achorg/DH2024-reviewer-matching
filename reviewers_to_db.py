@@ -15,13 +15,17 @@ collection = client.get_or_create_collection(
 
 splitter = SentenceTransformersTokenTextSplitter(chunk_overlap=5, model_name="LaBSE")
 
-reviewer_fields = ["personID", "name", "firstname", "topics", "maxreviews"]
+reviewer_fields = ['title','full_text','first_name','last_name', 'personID','topics', 'maxreviews']
 reviewer_df = pd.read_csv("reviewers.csv")
+reviewer_papers = pd.read_csv("dh24_papers.csv")
+# change 'topics_x' to 'topics'
+reviewer_papers = reviewer_papers.rename(columns={'topics_x':'topics'})
 
-
+#join reviewer_df and reviewer_papers
+reviewer_df = pd.concat([reviewer_df, reviewer_papers])
 def concatenate_text(row):
     output = ""
-    for field in ["topics", "google", "scholar"]:
+    for field in ["topics", "title", "full_text"]:
         if row[field] != "nan":
             output += str(row[field]).replace("\n", "")
     return output
@@ -41,8 +45,9 @@ for i, row in reviewer_df.iterrows():
             {
                 "id": row["personID"],
                 "type": "person",
-                "first_name": row["firstname"],
-                "last_name": row["name"],
+                "first_name": row["first_name"],
+                "last_name": row["last_name"],
+                "title": row["title"],
             }
         )
         ids.append(uuid.uuid4().hex)

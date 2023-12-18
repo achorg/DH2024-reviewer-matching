@@ -20,12 +20,14 @@ Visualization of multilingual text embeddings from [Google AI Blog](https://ai.g
 
 Sentence embeddings offer a more nuanced and contextual representation of the meaning of text than keywords. Keyword matching requires an exact match between the terms used by the reviewer and the terms used by the paper author. Embeddings allow for a more flexible match by using a distance score. Each match has a distance that can indicate similarity between the reviewer's described expertise and the paper description. 
 
-Furthermore, sentence embeddings allow us to use a paper's title, abstract, and keywords to make a match. This is important because many papers do not have keywords. Many reviewers also do not have keywords, so we only have their names and institutions. This information can be used to search for information about the reviewer using Google and Google Scholar.  
+Furthermore, sentence embeddings allow us to use a paper's title, abstract, and keywords to make a match. This is important because many papers do not have keywords. Many reviewers also do not have keywords, so we only have their names and institutions. To fill these gaps, we use information from the Index of Digital Humanities Conferences](https://dh-abstracts.library.virginia.edu/). 
+
+For semantic search, it is important to compare similar kinds of texts. A reviewer's presentations at a DH conference provide a very comparable text that provides a meaningful distance score.  Given that scholars' interests and expertise are always changing, we also index reviewers' proposals to the current conference. 
 
 The algorithm is implemented in Python and uses the [Language-agnostic BERT Sentence Embedding (LaBSE)](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html) model to create the embeddings. The LaBSE model was trained on 109 languages. 
 
 ### The algorithm is implemented in four scripts.
-1. The first script `make_reviewers_csv.py` takes the reviewer data from ConfTool and adds information from Google and Google Scholar search. The Google search tends to include biographical and professional information. Google Scholar results include the titles of publications. Search data is gathered with the Serp API so as to follow Google's terms of usage. The search query contains the reviewer's first and last name plus "digital humanities." The top results title and snippet text is saved, which provides greater context for matching. The script outputs a csv file called `reviewers.csv`.
+1. The first script `make_reviewers_csv.py` takes the reviewer data from ConfTool and adds information from the Index of Digital Humanities Conferences. The script outputs a csv file called `reviewers.csv`.
 
 2. The second script `reviewers_to_db.py` loads the data from reviewers.csv and adds it to a [Chroma](https://docs.trychroma.com/) vector database. The Language-agnostic BERT Sentence Embedding (LaBSE) model is used to create the embeddings. All text is chunked into blocks that can be processed by LaBSE.
 
@@ -36,12 +38,6 @@ The algorithm is implemented in Python and uses the [Language-agnostic BERT Sent
 ### Rationale of the algorithm:
 
 - This algorithm is meant to be a starting point and reference for the program committee, not an automated process. 
-- By Googling a scholar and including their publications, we get a better representation of their expertise than keywords alone. Nonetheless, the reviewer's declared keywords are still key to the matching process, given that they can provide a 1:1 match with a paper's keywords. 
+- A reviewer's declared keywords are still key to the matching process, given that they can provide a 1:1 match with a paper's keywords. 
 - The algorithm does not distinguish between presentation types. It is just as likely to assign a poster to a senior scholar as it is to assign a long paper to a graduate student. This choice invites further discussion and relflection. 
 - The algorithm does not try to find potential conflicts of interest. "Conflicts of interest include collaborators, projects on which you have worked, colleagues at your institution, or a situation in which your evaluation (positive or negative) would be professionally advantageous to you" ([src](https://ach2023.ach.org/en/reviewer-guidelines/)). Conflict of interest identification can be done using ConfTool with a reviewer's name, email address, and institutional affiliation [(see)](https://www.conftool.net/ctforum/index.php/topic,117.0.html). As Jennifer Guiliano and Laura Estil note, "Given how common large, multi-institutional projects are, as well as collaborative work more generally in the digital humanities, the current automated conflict of interest process [in ConfTool] is insufficient." When a review is assigned, it is important to give the potential reviewer [the option to decline, given a potential conflict](https://www.conftool.net/ctforum/index.php/topic,229.0.html). 
-
-
-### Data for report to CCC:
-Total number of reviews 
-compare matches made with ConfTool algorithm and semantic matching.
-note areas where manual intervention was needed.

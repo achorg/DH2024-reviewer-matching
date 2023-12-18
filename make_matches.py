@@ -11,7 +11,7 @@ collection = client.get_collection(name="reviewers",embedding_function=sentence_
 
 splitter = SentenceTransformersTokenTextSplitter(chunk_overlap=5,model_name="LaBSE")
 
-papers = pd.read_csv('DH2024WashingtonDC_papers_2023-12-11_04-33-28.csv')
+papers = pd.read_csv('DH2024WashingtonDC_papers_2023-12-17_20-31-56.csv')
 paper_fields = ['paperID','authors','title','contribution_type','title_plain','keywords', 'topics', 'tg1_Language', 'tg3_Geography', 'tg2_Temporal',
 'tg4_Methods', 'tg5_Disciplines_Fields_of_Study','tg7_TechReview', 'abstract_plain']
 papers = papers[paper_fields]
@@ -56,8 +56,10 @@ matches = collection.query(
 data = []
 for i, (distance, meta) in enumerate(zip(matches['distances'], matches['metadatas'])):
     for d, m in zip(distance, meta):
-        data.append({"paperID": metadatas[i]['id'],"title":metadatas[i]['title'], 'paper_topics': metadatas[i]['paper_topics'],'abstract':metadatas[i]['abstract'],'contribution_type': metadatas[i]['contribution_type'], "personID": m['id'], "distance": d, 'first_name': m['first_name'], 'last_name': m['last_name']})
-
+        try:
+            data.append({"paperID": metadatas[i]['id'],"title":metadatas[i]['title'], 'paper_topics': metadatas[i]['paper_topics'],'abstract':metadatas[i]['abstract'],'contribution_type': metadatas[i]['contribution_type'], "personID": m['id'], "distance": d, 'first_name': m['first_name'], 'last_name': m['last_name']})
+        except Exception as e:
+            print(e)
 matches_df = pd.DataFrame(data)
 
 random_paperIDs = matches_df.paperID.unique()
@@ -86,7 +88,7 @@ for id in random_paperIDs:
 output = []
 for reviewer in reviewers:
     for assignment in reviewer['assignments']:
-        output.append({'personID':reviewer['personID'],'firstname':reviewer['firstname'],'name':reviewer['name'],'reviewer_topics':str(reviewer['topics']).replace(',','').replace('\n',';'),'google':reviewer['google'],'scholar':reviewer['scholar'],'paperID':assignment['paperID'],'title':assignment['title'],'abstract':assignment['abstract'],'paper_topics':str(assignment['paper_topics']).replace('\n',';'),'distance':assignment['distance'], 'contribution_type': assignment['contribution_type']})
+        output.append({'personID':reviewer['personID'],'first_name':reviewer['first_name'],'last_name':reviewer['last_name'],'reviewer_topics':str(reviewer['topics']).replace(',','').replace('\n',';'),'paperID':assignment['paperID'],'title':assignment['title'],'abstract':assignment['abstract'],'paper_topics':str(assignment['paper_topics']).replace('\n',';'),'distance':assignment['distance'], 'contribution_type': assignment['contribution_type']})
 out_df = pd.DataFrame(output)
 out_df['keyword_matches'] = out_df.apply(lambda row: ";".join(list(set(row['paper_topics'].split(';')) & set(row['reviewer_topics'].split(';')))), axis=1)
 out_df['number_of_matches'] = out_df.apply(lambda row: len(set(row['paper_topics'].split(';')) & set(row['reviewer_topics'].split(';'))), axis=1)
